@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strava_users",
+  "info": {
+    "singularName": "strava-user",
+    "pluralName": "strava-users",
+    "displayName": "Strava User",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "strava_id": {
+      "type": "biginteger"
+    },
+    "access_token": {
+      "type": "string"
+    },
+    "refresh_token": {
+      "type": "string"
+    }
+  }
+}

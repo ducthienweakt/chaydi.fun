@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strava_configs",
+  "info": {
+    "singularName": "strava-config",
+    "pluralName": "strava-configs",
+    "displayName": "Strava Config",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "client_id": {
+      "type": "string"
+    },
+    "client_secret": {
+      "type": "string"
+    }
+  }
+}
