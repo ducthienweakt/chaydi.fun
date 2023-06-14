@@ -1,9 +1,7 @@
 /**
  * A set of functions called "actions" for `strava-webhook`
  */
-import FormData from "form-data";
-const axios = require('axios');
-const jsdom = require("jsdom");
+import service from "./../services/strava-webhook";
 
 export default {
   getAction: async (ctx, next) => {
@@ -30,110 +28,34 @@ export default {
   },
   postAction: async (ctx, next) => {
     try {
+      
       let event = ctx.request.body;
-      if (event && event.aspect_type == 'create' && event.object_type == 'activity') {
-        let activityId = event.object_id;
-        let userId = event.owner_id;
-        let stravaUser = await strapi.db.query('api::strava-user.strava-user').findOne({
-          where: {
-            strava_id: userId
-          }
-        });
-        const stravaConfig = await strapi.entityService.findOne('api::strava-config.strava-config', 1,);
+      let tokenObject =  await service.getTokenObj(event);
+      console.log("getToken>>>", tokenObject);
 
-        if(stravaUser && stravaConfig){
-          axios({
-            method: "post",
-            url: "https://www.strava.com/api/v3/oauth/token",
-            data: {
-              client_id: stravaConfig.client_id,
-              client_secret: stravaConfig.client_secret,
-              refresh_token: stravaUser.refresh_token,
-              grant_type: 'refresh_token'
-            }
-          })
-            .then(async function (response) {
-              console.log("token info..>>..",response.data)
-              let access_token = response.data.access_token;
-              //update strava user
-              await strapi.entityService.update('api::strava-user.strava-user', stravaUser.id, {
-                data: {
-                  access_token: access_token,
-                  refresh_token: response.data.refresh_token
-                },
-              });
-              var formData = new FormData();
-              formData.append('theloai', "tho");
-              formData.append('poemSubject', "amthuc.dat");
-              formData.append('poemType', "Bốn chữ (vè)");
-              formData.append('fullbaitho', "Thêm một khổ");
-              formData.append('order', '0');
-              axios({
-                method: "post",
-                url: "http://thomay.vn/thomay/index.php?q=tungcau",
-                data: formData,
-                headers: { "Content-Type": "multipart/form-data" },
-              })
-                .then(async function (data) {
-                  //handle success;
-                  const doc = new jsdom.JSDOM(data.data);
-                  let result = doc.window.document.querySelectorAll('.contain-2 .paragraph')[0].innerHTML.replace(/<br\s*\/?>/mg, "\n");
-                  result = result.replace(/<[^>]*>?/gm, '');
-                  result = result.replace(/&nbsp;/g, '');
-                  result = result + '- thơ được làm bởi bot AI';
-                  console.log(result);
-
-                  let time = "";
-                  var today = new Date()
-                  var curHr = today.getHours()
-                  if (curHr < 12) {
-                    time = "sáng"
-                  } else if (curHr < 15) {
-                    time = "trưa"
-                  } else if (curHr < 18) {
-                    time = "chiều"
-                  } else if (curHr < 22) {
-                    time = "tối"
-                  } else {
-                    time = "khuya"
-                  }
-
-                  let activity = await axios.get(
-                    `https://www.strava.com/api/v3/activities/`+ activityId,{headers: { "Authorization": "Bearer " + access_token },
-                    }
-                  );
-                 
-                  let distance = Math.floor(activity.data.distance/1000);
-
-                  axios({
-                    method: "put",
-                    url: "https://www.strava.com/api/v3/activities/" + activityId,
-                    headers: { "Authorization": "Bearer " + access_token },
-                    data: {
-                      name: "ăn "+time+" "+distance+" que!",
-                      description: result
-                    }
-                  }).then(function (data) {
-                    ctx.body = result;
-                    ctx.status = 200;
-                  }).catch(function (response) {
-                    //handle error
-                    console.log(response)
-                  });
-                })
-                .catch(function (response) {
-                  //handle error
-                });
-            }).catch(function (response) {
-              //console.log("error when get auth==>", response)
-            });
+      if(tokenObject){
+        let content = "";
+        let poem  = await service.generatePoem();
+       // console.log("generatePoem>>>", poem);
+  
+        let activity = await service.getActivity(event.object_id, tokenObject.access_token);
+        // console.log("getActivity>>>", activity);
+  
+        let title = service.getTitle(activity.distance);
+        //console.log("title>>>", title);
+       
+        if(activity.start_latlng){
+          let airMessage = await service.getAirQuality(activity.start_latlng[0],activity.start_latlng[1],activity.distance, activity.moving_time);
+          content +=airMessage;
         }
-        
+        content += "\n\n"+poem;
 
+        await service.updateActivity(title,content,event.object_id,tokenObject.access_token)
       }
+     
       ctx.status = 200;
     } catch (err) {
-      //ctx.body = err;
+      ctx.body = err;
     }
   }
 };
