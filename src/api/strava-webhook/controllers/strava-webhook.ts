@@ -47,9 +47,9 @@ export default {
         if(activity.start_latlng){
           let airMessage = await service.getAirQuality(activity.start_latlng[0],activity.start_latlng[1],activity.distance, activity.moving_time);
           content +=airMessage;
+          content += "\n\n"+poem;
         }
-        content += "\n\n"+poem;
-
+      
         await service.updateActivity(title,content,event.object_id,tokenObject.access_token)
       }
      
