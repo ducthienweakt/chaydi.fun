@@ -61,7 +61,7 @@ export default {
         var formData = new FormData();
         formData.append('theloai', "tho");
         formData.append('poemSubject', "amthuc.dat");
-        formData.append('poemType', "Bốn chữ (vè)");
+        formData.append('poemType', "Lục bát");
         formData.append('fullbaitho', "Thêm một khổ");
         formData.append('order', '0');
         let htmlData = await axios({
@@ -117,7 +117,7 @@ export default {
         let airMessage = ""
         try {
             let response = await axios.get(`http://api.airvisual.com/v2/nearest_city/`,
-            {params: { lat:lat, long:long, key:'00d39b82-1b8c-48bf-93d3-ec9eacc25f31'}});
+            {params: { lat:lat, lon:long, key:'00d39b82-1b8c-48bf-93d3-ec9eacc25f31'}});
             let weatherData = response.data.data;
             let aqius = weatherData.current.pollution.aqius;
             let weather = weatherData.current.weather;
@@ -144,21 +144,21 @@ export default {
                     break;
                 }
                 case aqius<200: {
-                    airMessage = "Chất lượng không khí: 🟤 Đếch an toàn - "+aqius+" USAQI";
+                    airMessage = "Chất lượng không khí: 🔴 Đếch an toàn - "+aqius+" USAQI";
                     airMessage += ", ";
-                    airMessage += "chúc mừng bạn đã hít quá nhiều bụi mịn PM2.5 tron suốt "+minutes+" 🙃."
+                    airMessage += "chúc mừng bạn đã hít quá nhiều bụi mịn PM2.5 trong suốt "+minutes+" 🙃."
                     break;
                 }
                 case aqius<250: {
                     airMessage = "Chất lượng không khí: 🟣 Rất không an toàn - "+aqius+" USAQI";
                     airMessage += ", ";
-                    airMessage += "chúc mừng bạn đã hít quá nhiều bụi mịn PM2.5 tron suốt "+minutes+" 🙃."
+                    airMessage += "chúc mừng bạn đã hít quá nhiều bụi mịn PM2.5 trong suốt "+minutes+" 🙃."
                     break;
                 }
                 case aqius<500: {
                     airMessage = "Chất lượng không khí: ⚫ Nguy hiểm - "+aqius+" USAQI";
                     airMessage += ", ";
-                    airMessage += "chúc mừng bạn đã hít quá nhiều bụi mịn PM2.5 tron suốt "+minutes+" 🙃."
+                    airMessage += "chúc mừng bạn đã hít quá nhiều bụi mịn PM2.5 trong suốt "+minutes+" 🙃."
                 }
             }
             airMessage+="\nNhiệt độ "+ weather.tp+"°C, độ ẩm "+weather.hu+"%, sức gió "+Math.round(weather.ws*3.6)+"km/h."
