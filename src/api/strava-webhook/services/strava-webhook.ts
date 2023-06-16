@@ -78,9 +78,9 @@ export default {
         poem = result;
         return poem;
     },
-    getTitle: (distance) => {
+    getTitle: (distance, startDateLocal) => {
         let time = "";
-        var today = new Date()
+        var today = new Date(startDateLocal)
         var curHr = today.getHours()
         if (curHr < 12) {
             time = "sáng"

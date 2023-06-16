@@ -41,7 +41,7 @@ export default {
         let activity = await service.getActivity(event.object_id, tokenObject.access_token);
         // console.log("getActivity>>>", activity);
   
-        let title = service.getTitle(activity.distance);
+        let title = service.getTitle(activity.distance, activity.start_date_local);
         //console.log("title>>>", title);
        
         if(activity.start_latlng){
