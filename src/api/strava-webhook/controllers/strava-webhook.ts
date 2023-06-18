@@ -35,22 +35,37 @@ export default {
 
       if(tokenObject){
         let content = "";
-        let poem  = await service.generatePoem();
-       // console.log("generatePoem>>>", poem);
+       
   
         let activity = await service.getActivity(event.object_id, tokenObject.access_token);
+        let stravaSettings = await strapi.db.query('api::strava-setting.strava-setting').findOne({ where: { strava_id: activity.athlete.id } });
         // console.log("getActivity>>>", activity);
-  
-        let title = service.getTitle(activity.distance, activity.start_date_local);
-        //console.log("title>>>", title);
-       
-        if(activity.start_latlng){
-          let airMessage = await service.getAirQuality(activity.start_latlng[0],activity.start_latlng[1],activity.distance, activity.moving_time);
-          content +=airMessage;
-          content += "\n\n"+poem;
+        if(activity && stravaSettings){
+          let name = activity.title;
+
+          // update Title
+          if(stravaSettings.has_update_title){
+            name = service.getTitle(activity.distance, activity.start_date_local, stravaSettings.title_format);
+            console.log("title>>>", name);
+          }
+          
+
+
+          if(activity.start_latlng && activity.start_latlng.length>0){
+            let airMessage = await service.getAirQuality(activity.start_latlng[0],activity.start_latlng[1],activity.distance, activity.moving_time);
+            content +=airMessage;
+            content += "\n\n";
+          }
+
+          if(stravaSettings.has_poem){
+            let poem = await service.generatePoem(stravaSettings.poem_type,stravaSettings.poem_subject);
+            content+= poem
+            // console.log("generatePoem>>>", poem);
+          }
+        
+          await service.updateActivity(name,content,event.object_id,tokenObject.access_token)
         }
-      
-        await service.updateActivity(title,content,event.object_id,tokenObject.access_token)
+        
       }
      
       ctx.status = 200;

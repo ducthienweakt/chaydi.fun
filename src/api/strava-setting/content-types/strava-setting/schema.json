@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strava_settings",
+  "info": {
+    "singularName": "strava-setting",
+    "pluralName": "strava-settings",
+    "displayName": "Strava Setting",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "strava_id": {
+      "type": "biginteger",
+      "unique": true
+    },
+    "has_update_title": {
+      "type": "boolean",
+      "default": true
+    },
+    "title_format": {
+      "type": "text"
+    },
+    "has_poem": {
+      "type": "boolean",
+      "default": true
+    },
+    "poem_type": {
+      "type": "text",
+      "default": "Lục bát"
+    },
+    "poem_subject": {
+      "type": "text",
+      "default": "amthuc.dat"
+    }
+  }
+}

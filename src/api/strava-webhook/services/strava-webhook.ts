@@ -56,14 +56,14 @@ export default {
         }
         return activity;
     },
-    generatePoem: async () => {
+    generatePoem: async (poemType, poemSubject, theload="tho", fullbaitho="Thêm một khổ", order = "0") => {
         let poem = "";
         var formData = new FormData();
-        formData.append('theloai', "tho");
-        formData.append('poemSubject', "amthuc.dat");
-        formData.append('poemType', "Lục bát");
-        formData.append('fullbaitho', "Thêm một khổ");
-        formData.append('order', '0');
+        formData.append('theloai', theload);
+        formData.append('poemSubject', poemSubject);
+        formData.append('poemType', poemType);
+        formData.append('fullbaitho', fullbaitho);
+        formData.append('order', order);
         let htmlData = await axios({
             method: "post",
             url: "http://thomay.vn/thomay/index.php?q=tungcau",
@@ -78,11 +78,11 @@ export default {
         poem = result;
         return poem;
     },
-    getTitle: (distance, startDateLocal) => {
+    getTitle: (distance, startDateLocal, stringFormat) => {
         let time = "";
         var today = new Date(startDateLocal)
         var curHr = today.getHours()
-        if (curHr < 12) {
+        if (curHr < 10) {
             time = "sáng"
         } else if (curHr < 15) {
             time = "trưa"
@@ -94,7 +94,9 @@ export default {
             time = "khuya"
         }
         distance = Math.floor(distance / 1000);
-        return "ăn " + time + " " + distance + " que!";
+        stringFormat = stringFormat.replace('{{distance}}', distance);
+        stringFormat = stringFormat.replace('{{time}}', time);
+        return stringFormat;
     },
     updateActivity: async (title, content, activityId, accessToken) => {
         try {

@@ -20,6 +20,9 @@
     },
     "refresh_token": {
       "type": "string"
+    },
+    "strava_name": {
+      "type": "string"
     }
   }
 }
