@@ -50,11 +50,20 @@ export default {
           }
           
 
-
-          if(activity.start_latlng && activity.start_latlng.length>0){
-            let airMessage = await service.getAirQuality(activity.start_latlng[0],activity.start_latlng[1],activity.distance, activity.moving_time);
-            content +=airMessage;
-            content += "\n\n";
+          //add weahter
+          if(stravaSettings.has_weather){
+            let lat, lon:Number;
+            if(activity.start_latlng && activity.start_latlng.length){
+              let airMessage = await service.getAirQuality(lat, lon, activity.distance, activity.moving_time);
+              content +=airMessage;
+              content += "\n\n";
+            }else if(stravaSettings.lat && stravaSettings.long){
+              lat = stravaSettings.lat;
+              lon = stravaSettings.lon;
+              let airMessage = await service.getAirQuality(lat, lon, activity.distance, activity.moving_time);
+              content +=airMessage;
+              content += "\n\n";
+            }
           }
 
           if(stravaSettings.has_poem){

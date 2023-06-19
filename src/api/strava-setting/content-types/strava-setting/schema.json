@@ -34,6 +34,16 @@
     "poem_subject": {
       "type": "text",
       "default": "amthuc.dat"
+    },
+    "has_weather": {
+      "type": "boolean",
+      "default": true
+    },
+    "lat": {
+      "type": "decimal"
+    },
+    "lon": {
+      "type": "decimal"
     }
   }
 }
