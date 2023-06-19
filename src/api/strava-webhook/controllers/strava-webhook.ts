@@ -54,17 +54,21 @@ export default {
           if(stravaSettings.has_weather){
             let lat, lon:Number;
             if(activity.start_latlng && activity.start_latlng.length){
-              let airMessage = await service.getAirQuality(lat, lon, activity.distance, activity.moving_time);
+              lat = activity.start_latlng[0];
+              lon = activity.start_latlng[1];
+              let airMessage = await service.getAirQuality(lat,lon,activity.distance, activity.moving_time);
               content +=airMessage;
               content += "\n\n";
             }else if(stravaSettings.lat && stravaSettings.long){
               lat = stravaSettings.lat;
               lon = stravaSettings.lon;
-              let airMessage = await service.getAirQuality(lat, lon, activity.distance, activity.moving_time);
+              let airMessage = await service.getAirQuality(lat,lon,activity.distance, activity.moving_time);
               content +=airMessage;
               content += "\n\n";
             }
           }
+
+         
 
           if(stravaSettings.has_poem){
             let poem = await service.generatePoem(stravaSettings.poem_type,stravaSettings.poem_subject);
