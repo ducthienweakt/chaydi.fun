@@ -59,7 +59,7 @@ export default {
               let airMessage = await service.getAirQuality(lat,lon,activity.distance, activity.moving_time);
               content +=airMessage;
               content += "\n\n";
-            }else if(stravaSettings.lat && stravaSettings.long){
+            }else if(stravaSettings.lat && stravaSettings.lon){
               lat = stravaSettings.lat;
               lon = stravaSettings.lon;
               let airMessage = await service.getAirQuality(lat,lon,activity.distance, activity.moving_time);
