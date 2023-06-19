@@ -40,10 +40,10 @@
       "default": true
     },
     "lat": {
-      "type": "decimal"
+      "type": "float"
     },
     "lon": {
-      "type": "decimal"
+      "type": "float"
     }
   }
 }
